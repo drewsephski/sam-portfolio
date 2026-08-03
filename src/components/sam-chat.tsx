@@ -32,6 +32,7 @@ const SUGGESTIONS = [
 
 export function SamChat({ portrait }: { portrait: string }) {
   const [open, setOpen] = useState(false)
+  const [suggestionsReady, setSuggestionsReady] = useState(false)
   const { error, messages, sendMessage, status, stop } = useChat({
     transport: chatTransport,
   })
@@ -46,6 +47,16 @@ export function SamChat({ portrait }: { portrait: string }) {
     return () => window.removeEventListener('keydown', closeOnEscape)
   }, [])
 
+  useEffect(() => {
+    if (!open) {
+      setSuggestionsReady(false)
+      return
+    }
+
+    const timer = window.setTimeout(() => setSuggestionsReady(true), 500)
+    return () => window.clearTimeout(timer)
+  }, [open])
+
   const submitMessage = ({ text }: PromptInputMessage) => {
     const trimmedText = text.trim()
     if (!trimmedText || isGenerating) return
@@ -53,7 +64,7 @@ export function SamChat({ portrait }: { portrait: string }) {
   }
 
   const askSuggestion = (text: string) => {
-    if (!isGenerating) sendMessage({ text })
+    if (suggestionsReady && !isGenerating) sendMessage({ text })
   }
 
   return (
@@ -62,7 +73,7 @@ export function SamChat({ portrait }: { portrait: string }) {
         aria-hidden={!open}
         aria-label="Chat with Sam's digital assistant"
         aria-modal="false"
-        className={`absolute bottom-[4.5rem] right-0 flex h-[min(620px,calc(100dvh-6.5rem))] w-[calc(100vw-1.5rem)] max-w-[410px] origin-bottom-right flex-col overflow-hidden rounded-[1.75rem] border border-gray-200 bg-white text-gray-900 shadow-[0_28px_90px_rgba(17,24,39,0.2)] transition-[opacity,transform,visibility] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] sm:bottom-[5rem] ${
+        className={`absolute bottom-[4.5rem] right-0 flex h-[min(580px,calc(100dvh-6.5rem))] w-[calc(100vw-1.5rem)] max-w-[410px] origin-bottom-right flex-col overflow-hidden rounded-[1.75rem] border border-gray-200 bg-white text-gray-900 shadow-[0_28px_90px_rgba(17,24,39,0.2)] transition-[opacity,transform,visibility] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] sm:bottom-[5rem] ${
           open
             ? 'visible translate-y-0 scale-100 opacity-100'
             : 'invisible translate-y-5 scale-[0.92] opacity-0'
@@ -174,7 +185,8 @@ export function SamChat({ portrait }: { portrait: string }) {
                 <div className="grid grid-cols-2 gap-2">
                   {SUGGESTIONS.map((suggestion) => (
                     <button
-                      className="group flex min-h-[58px] items-center justify-between gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-left text-[11px] font-medium leading-snug text-gray-700 shadow-[0_1px_2px_rgba(17,24,39,0.02)] transition-[border-color,transform,box-shadow] hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-[0_5px_14px_rgba(17,24,39,0.06)]"
+                      className="group flex min-h-[58px] items-center justify-between gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-left text-[11px] font-medium leading-snug text-gray-700 shadow-[0_1px_2px_rgba(17,24,39,0.02)] transition-[border-color,transform,box-shadow] hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-[0_5px_14px_rgba(17,24,39,0.06)] disabled:pointer-events-none"
+                      disabled={!suggestionsReady || isGenerating}
                       key={suggestion.prompt}
                       onClick={() => askSuggestion(suggestion.prompt)}
                       type="button"
