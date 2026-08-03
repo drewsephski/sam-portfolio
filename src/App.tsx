@@ -7,6 +7,7 @@ import {
   Shader,
   Swirl,
 } from 'shaders/react'
+import { SamChat } from '@/components/sam-chat'
 
 const ABOUT_PRODUCTION_IMAGE = '/images/about-production-field.webp'
 const ABOUT_FACILITIES_IMAGE = '/images/about-production-facility.webp'
@@ -810,13 +811,16 @@ function App() {
   }, [])
 
   return (
-    <main>
-      <Hero />
-      <About />
-      <Experience />
-      <CaseStudies />
-      <Contact />
-    </main>
+    <>
+      <main>
+        <Hero />
+        <About />
+        <Experience />
+        <CaseStudies />
+        <Contact />
+      </main>
+      <SamChat portrait={SAM_PORTRAIT} />
+    </>
   )
 }
 
