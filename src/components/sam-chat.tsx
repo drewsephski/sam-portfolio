@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { DefaultChatTransport } from 'ai'
-import { MessageCircle, Radio, X } from 'lucide-react'
+import { ArrowRight, MessageCircle, X } from 'lucide-react'
 import {
   Conversation,
   ConversationContent,
@@ -24,30 +24,11 @@ import {
 const chatTransport = new DefaultChatTransport({ api: '/api/chat' })
 
 const SUGGESTIONS = [
-  'What do you work on?',
-  'Tell me about your background.',
-  'What guides your investments?',
-  'How can I reach you?',
+  { label: 'Work & experience', prompt: 'What do you work on?' },
+  { label: 'Background', prompt: 'Tell me about your background.' },
+  { label: 'Investment approach', prompt: 'What guides your investments?' },
+  { label: 'Get in touch', prompt: 'How can I reach you?' },
 ]
-
-function SignalBars({ active }: { active: boolean }) {
-  return (
-    <span aria-hidden="true" className="flex h-4 items-end gap-[2px]">
-      {[5, 9, 13].map((height, index) => (
-        <span
-          className={`w-[2px] rounded-full bg-current transition-opacity duration-300 ${
-            active ? 'animate-pulse opacity-100' : 'opacity-45'
-          }`}
-          key={height}
-          style={{
-            animationDelay: `${index * 140}ms`,
-            height,
-          }}
-        />
-      ))}
-    </span>
-  )
-}
 
 export function SamChat({ portrait }: { portrait: string }) {
   const [open, setOpen] = useState(false)
@@ -78,51 +59,51 @@ export function SamChat({ portrait }: { portrait: string }) {
   return (
     <aside className="fixed bottom-3 right-3 z-[70] sm:bottom-5 sm:right-5">
       <div
+        aria-hidden={!open}
         aria-label="Chat with Sam's digital assistant"
         aria-modal="false"
-        className={`absolute bottom-[4.75rem] right-0 flex h-[min(580px,calc(100dvh-7rem))] w-[calc(100vw-1.5rem)] max-w-[390px] origin-bottom-right flex-col overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#17191c] text-white shadow-[0_28px_90px_rgba(0,0,0,0.34)] transition-[opacity,transform,visibility] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] sm:bottom-[5.25rem] ${
+        className={`absolute bottom-[4.5rem] right-0 flex h-[min(620px,calc(100dvh-6.5rem))] w-[calc(100vw-1.5rem)] max-w-[410px] origin-bottom-right flex-col overflow-hidden rounded-[1.75rem] border border-gray-200 bg-white text-gray-900 shadow-[0_28px_90px_rgba(17,24,39,0.2)] transition-[opacity,transform,visibility] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] sm:bottom-[5rem] ${
           open
             ? 'visible translate-y-0 scale-100 opacity-100'
             : 'invisible translate-y-5 scale-[0.92] opacity-0'
         }`}
+        inert={!open}
         role="dialog"
       >
-        <div className="relative overflow-hidden border-b border-white/10 px-5 pb-4 pt-5">
+        <div className="relative overflow-hidden border-b border-gray-200 px-5 pb-4 pt-5">
           <div
             aria-hidden="true"
-            className="absolute inset-x-0 top-0 h-[3px] bg-[#F26522]"
+            className="absolute inset-x-0 top-0 h-1 bg-[#F26522]"
           />
-          <div className="absolute right-16 top-0 h-24 w-24 rounded-full bg-[#F26522]/10 blur-3xl" />
           <div className="relative flex items-center justify-between gap-4">
             <div className="flex min-w-0 items-center gap-3">
               <div className="relative shrink-0">
                 <img
                   alt="Sam Stehno"
-                  className="h-11 w-11 rounded-full border border-white/15 object-cover"
-                  height="44"
+                  className="h-12 w-12 rounded-full border border-gray-200 object-cover"
+                  height="48"
                   src={portrait}
-                  width="44"
+                  width="48"
                 />
-                <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-[3px] border-[#17191c] bg-[#F26522]" />
+                <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-[3px] border-white bg-[#F26522]" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <h2 className="truncate text-[15px] font-semibold tracking-[-0.01em]">
+                  <h2 className="truncate text-[16px] font-semibold tracking-[-0.02em] text-gray-900">
                     Ask Sam
                   </h2>
-                  <span className="rounded-full border border-white/10 bg-white/[0.06] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-white/50">
-                    AI
+                  <span className="rounded-full bg-gray-100 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-gray-500">
+                    Portfolio AI
                   </span>
                 </div>
-                <p className="mt-0.5 flex items-center gap-1.5 text-[11px] text-white/50">
-                  <Radio aria-hidden="true" className="h-3 w-3 text-[#F5824A]" />
-                  Brief answers from Sam&rsquo;s portfolio
+                <p className="mt-0.5 text-[11px] text-gray-500">
+                  Answers grounded in this portfolio
                 </p>
               </div>
             </div>
             <button
               aria-label="Close chat"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/65 transition-colors hover:bg-white/10 hover:text-white"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-900 hover:text-white"
               onClick={() => setOpen(false)}
               type="button"
             >
@@ -131,16 +112,16 @@ export function SamChat({ portrait }: { portrait: string }) {
           </div>
         </div>
 
-        <Conversation className="min-h-0 bg-[#f3f1ed] text-gray-900">
-          <ConversationContent className="gap-4 px-4 py-5">
+        <Conversation className="min-h-0 bg-[#F5F5F5] text-gray-900">
+          <ConversationContent className="gap-5 px-4 py-5 sm:px-5">
             <Message from="assistant" className="max-w-[92%]">
               <div className="mb-0.5 flex items-center gap-2 px-1 text-[10px] font-semibold uppercase tracking-[0.13em] text-gray-400">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#F26522]" />
-                Sam / channel 01
+                <span className="h-px w-4 bg-[#F26522]" />
+                A note from Sam
               </div>
-              <MessageContent className="rounded-2xl rounded-tl-[5px] bg-white px-4 py-3 text-[13px] leading-relaxed shadow-[0_1px_0_rgba(0,0,0,0.05)]">
+              <MessageContent className="rounded-[1.15rem] rounded-tl-[5px] border border-gray-200 bg-white px-4 py-3.5 text-[13px] leading-relaxed shadow-[0_1px_2px_rgba(17,24,39,0.03)]">
                 <MessageResponse>
-                  Hey, I&rsquo;m Sam&rsquo;s digital stand-in. Ask me about my work, background, or how to get in touch.
+                  Hi, I&rsquo;m Sam&rsquo;s portfolio assistant. Ask about my engineering work, investment approach, background, or how to get in touch.
                 </MessageResponse>
               </MessageContent>
             </Message>
@@ -152,8 +133,8 @@ export function SamChat({ portrait }: { portrait: string }) {
                     <MessageContent
                       className={
                         message.role === 'user'
-                          ? 'rounded-2xl rounded-br-[5px] bg-[#23262a] px-4 py-3 text-[13px] leading-relaxed text-white'
-                          : 'rounded-2xl rounded-tl-[5px] bg-white px-4 py-3 text-[13px] leading-relaxed shadow-[0_1px_0_rgba(0,0,0,0.05)]'
+                          ? 'rounded-[1.15rem] rounded-br-[5px] bg-gray-900 px-4 py-3 text-[13px] leading-relaxed text-white'
+                          : 'rounded-[1.15rem] rounded-tl-[5px] border border-gray-200 bg-white px-4 py-3 text-[13px] leading-relaxed shadow-[0_1px_2px_rgba(17,24,39,0.03)]'
                       }
                       key={`${message.id}-${index}`}
                     >
@@ -167,7 +148,7 @@ export function SamChat({ portrait }: { portrait: string }) {
             {status === 'submitted' && (
               <div
                 aria-label="Sam is thinking"
-                className="flex w-fit items-center gap-1.5 rounded-2xl rounded-tl-[5px] bg-white px-4 py-3 shadow-[0_1px_0_rgba(0,0,0,0.05)]"
+                className="flex w-fit items-center gap-1.5 rounded-[1.15rem] rounded-tl-[5px] border border-gray-200 bg-white px-4 py-3 shadow-[0_1px_2px_rgba(17,24,39,0.03)]"
               >
                 {[0, 1, 2].map((dot) => (
                   <span
@@ -186,44 +167,55 @@ export function SamChat({ portrait }: { portrait: string }) {
             )}
 
             {messages.length === 0 && (
-              <div className="mt-1 flex flex-wrap gap-2">
-                {SUGGESTIONS.map((suggestion) => (
-                  <button
-                    className="rounded-full border border-gray-300 bg-transparent px-3 py-2 text-left text-[11px] font-medium text-gray-600 transition-[border-color,background-color,color] hover:border-[#F26522]/50 hover:bg-white hover:text-gray-900"
-                    key={suggestion}
-                    onClick={() => askSuggestion(suggestion)}
-                    type="button"
-                  >
-                    {suggestion}
-                  </button>
-                ))}
+              <div className="mt-1">
+                <p className="mb-2.5 px-1 text-[10px] font-semibold uppercase tracking-[0.13em] text-gray-400">
+                  Good places to start
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {SUGGESTIONS.map((suggestion) => (
+                    <button
+                      className="group flex min-h-[58px] items-center justify-between gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-left text-[11px] font-medium leading-snug text-gray-700 shadow-[0_1px_2px_rgba(17,24,39,0.02)] transition-[border-color,transform,box-shadow] hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-[0_5px_14px_rgba(17,24,39,0.06)]"
+                      key={suggestion.prompt}
+                      onClick={() => askSuggestion(suggestion.prompt)}
+                      type="button"
+                    >
+                      <span>{suggestion.label}</span>
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors group-hover:bg-[#F26522] group-hover:text-white">
+                        <ArrowRight aria-hidden="true" className="h-3 w-3" />
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </ConversationContent>
           <ConversationScrollButton className="border-gray-200 bg-white text-gray-900" />
         </Conversation>
 
-        <div className="border-t border-white/10 bg-[#1d1f22] p-3">
+        <div className="border-t border-gray-200 bg-white p-3">
           <PromptInput
-            className="[&_[data-slot=input-group]]:rounded-[1.15rem] [&_[data-slot=input-group]]:border-white/10 [&_[data-slot=input-group]]:bg-white/[0.07] [&_[data-slot=input-group]]:shadow-none"
+            className="[&_[data-slot=input-group]]:rounded-[1.15rem] [&_[data-slot=input-group]]:border-gray-200 [&_[data-slot=input-group]]:bg-[#F5F5F5] [&_[data-slot=input-group]]:shadow-none [&_[data-slot=input-group]]:focus-within:border-gray-400 [&_[data-slot=input-group]]:focus-within:ring-0"
             onSubmit={submitMessage}
           >
             <PromptInputBody>
               <PromptInputTextarea
                 aria-label="Message Sam"
                 autoFocus={open}
-                className="min-h-[54px] resize-none px-3 pt-3 text-[13px] leading-relaxed text-white placeholder:text-white/35"
+                className="min-h-[54px] resize-none px-3 pt-3 text-[13px] leading-relaxed text-gray-900 placeholder:text-gray-400"
                 disabled={isGenerating}
-                placeholder="Ask Sam something…"
+                placeholder="Ask about Sam’s work…"
               />
             </PromptInputBody>
             <PromptInputFooter className="px-2 pb-2">
               <span
                 aria-live="polite"
-                className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.12em] text-white/35"
+                className="flex items-center gap-2 text-[10px] font-medium text-gray-400"
               >
-                <SignalBars active={isGenerating} />
-                {isGenerating ? 'Transmitting' : 'Open channel'}
+                <span
+                  aria-hidden="true"
+                  className={`h-1.5 w-1.5 rounded-full bg-[#F26522] ${isGenerating ? 'animate-pulse' : ''}`}
+                />
+                {isGenerating ? 'Sam is thinking…' : 'Portfolio assistant'}
               </span>
               <PromptInputSubmit
                 className="rounded-full bg-[#F26522] text-white hover:bg-[#df5b1d]"
@@ -232,30 +224,31 @@ export function SamChat({ portrait }: { portrait: string }) {
               />
             </PromptInputFooter>
           </PromptInput>
-          <p className="mt-2 text-center text-[9px] tracking-wide text-white/25">
+          <p className="mt-2 text-center text-[9px] tracking-wide text-gray-400">
             AI can miss details. Email Sam for anything important.
           </p>
         </div>
       </div>
 
       <button
+        aria-hidden={open}
         aria-expanded={open}
         aria-label={open ? 'Close chat with Sam' : 'Open chat with Sam'}
-        className={`group relative ml-auto flex h-16 items-center gap-3 overflow-hidden rounded-full bg-[#17191c] p-2 pl-5 text-white shadow-[0_16px_45px_rgba(0,0,0,0.25)] transition-[transform,background-color] duration-300 hover:-translate-y-1 hover:bg-[#202327] sm:h-[68px] ${
+        className={`group relative ml-auto flex h-[60px] items-center gap-3 overflow-hidden rounded-full border border-white/10 bg-gray-900 p-1.5 pl-5 text-white shadow-[0_16px_45px_rgba(17,24,39,0.25)] transition-[transform,background-color,opacity] duration-300 hover:-translate-y-1 hover:bg-[#202327] sm:h-16 ${
           open ? 'pointer-events-none scale-90 opacity-0' : 'scale-100 opacity-100'
         }`}
         onClick={() => setOpen(true)}
+        tabIndex={open ? -1 : 0}
         type="button"
       >
         <span className="text-left">
           <span className="block text-[13px] font-semibold leading-none">Ask Sam</span>
-          <span className="mt-1.5 flex items-center gap-1.5 text-[10px] uppercase tracking-[0.12em] text-white/45">
-            <SignalBars active /> Quick answers
+          <span className="mt-1.5 block text-[10px] text-white/45">
+            Portfolio assistant
           </span>
         </span>
-        <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#F26522] text-white sm:h-[52px] sm:w-[52px]">
-          <span className="absolute inset-0 animate-ping rounded-full bg-[#F26522] opacity-20" />
-          <MessageCircle aria-hidden="true" className="relative h-5 w-5" />
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#F26522] text-white transition-transform duration-300 group-hover:rotate-[-8deg] sm:h-[52px] sm:w-[52px]">
+          <MessageCircle aria-hidden="true" className="h-5 w-5" />
         </span>
       </button>
     </aside>
