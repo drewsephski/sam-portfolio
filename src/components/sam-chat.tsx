@@ -26,6 +26,7 @@ const chatTransport = new DefaultChatTransport({ api: '/api/chat' })
 const SUGGESTIONS = [
   'What do you work on?',
   'Tell me about your background.',
+  'What guides your investments?',
   'How can I reach you?',
 ]
 
